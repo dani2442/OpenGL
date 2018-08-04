@@ -58,6 +58,7 @@ int Window::Initialise()
 
 	// Handle key + Mouse Input
 	createCallbacks();
+	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Allow modern extension features
 	glewExperimental = GL_TRUE;
@@ -76,9 +77,24 @@ int Window::Initialise()
 	glfwSetWindowUserPointer(mainWindow, this); //SDL: SDL_GetMouseState(&x,&y);
 }
 
+GLfloat Window::getXChange()
+{
+	GLfloat theChange = xChange;
+	xChange = 0.0f;
+	return theChange;
+}
+
+GLfloat Window::getYChange()
+{
+	GLfloat theChange = yChange;
+	yChange = 0.0f;
+	return theChange;
+}
+
 void Window::createCallbacks()
 {
 	glfwSetKeyCallback(mainWindow, handleKeys);
+	glfwSetCursorPosCallback(mainWindow, handleMouse);
 }
 
 void Window::handleKeys(GLFWwindow * window, int key, int code, int action, int mode)
@@ -89,13 +105,26 @@ void Window::handleKeys(GLFWwindow * window, int key, int code, int action, int 
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
 	if (key >= 0 && key < 1024) {
-		if (action == GLFW_PRESS) {
-			theWindow->keys[key] = true;
-			printf("Pressed: %d\n", key);
-		}
-		else if (action == GLFW_RELEASE) {
-			theWindow->keys[key] = false;
-			printf("Realease: %d\n", key);
-		}
+		if (action == GLFW_PRESS)
+			theWindow->keys[key] = true;//printf("Pressed: %d\n", key);
+		else if (action == GLFW_RELEASE)
+			theWindow->keys[key] = false;//printf("Realease: %d\n", key);
 	}
+}
+
+void Window::handleMouse(GLFWwindow * window, double xPos, double yPos)
+{
+	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+	if (theWindow->mouseFirstMoved) {
+		theWindow->lastX = xPos;
+		theWindow->lastY = yPos;
+		theWindow->mouseFirstMoved = false;
+	}
+	theWindow->xChange = xPos - theWindow->lastX;
+	theWindow->yChange = theWindow->lastY - yPos;
+
+	theWindow->lastX = xPos;
+	theWindow->lastY = yPos;
+	//printf("x:%.6f, y:%6f\n", theWindow->xChange, theWindow->yChange);
 }
