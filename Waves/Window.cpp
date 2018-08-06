@@ -2,8 +2,8 @@
 
 Window::Window()
 {
-	width = 800;
-	height = 600;
+	width = 1800;
+	height = 1000;
 
 	for(size_t i = 0; i < 1024; i++)
 	{
@@ -39,9 +39,14 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	// Allow forward compatiblity
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-	// Create the window
-	mainWindow = glfwCreateWindow(width, height, "Test Window", NULL, NULL);
+	/*
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	// Create the window*/
+	mainWindow = glfwCreateWindow(1000, 1000, "Test Window", NULL, NULL);
 	if (!mainWindow)
 	{
 		printf("Error creating GLFW window!");
@@ -49,6 +54,7 @@ int Window::Initialise()
 		return 1;
 	}
 	glfwMaximizeWindow(mainWindow);
+
 	// Get buffer size information
 	glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
